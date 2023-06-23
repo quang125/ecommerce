@@ -5,6 +5,8 @@ import com.example.ecommercebackendproject.model.dto.UserDto;
 import com.example.ecommercebackendproject.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ public class UserServiceImpl implements IUserService{
     private UserDao userDao;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthService authService;
 
     @Override
     public UserDto updateInformation(UserDto userDto) throws Exception {
@@ -39,4 +43,6 @@ public class UserServiceImpl implements IUserService{
         for(User x:userList) userDtos.add(new UserDto(x.getId(),x.getEmail(),x.getPhoneNumber(), x.getPassword(), x.getUsername(),x.getRole().getRole(),x.getFullName()));
         return userDtos;
     }
+
+
 }

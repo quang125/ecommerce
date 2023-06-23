@@ -1,5 +1,6 @@
 package com.example.ecommercebackendproject.service;
 
+import com.example.ecommercebackendproject.dao.CartDao;
 import com.example.ecommercebackendproject.dao.RoleDao;
 import com.example.ecommercebackendproject.dao.UserDao;
 import com.example.ecommercebackendproject.jwt.JwtResponse;
@@ -7,6 +8,7 @@ import com.example.ecommercebackendproject.jwt.JwtTokenProvider;
 import com.example.ecommercebackendproject.model.CustomUserDetails;
 import com.example.ecommercebackendproject.model.dto.LoginForm;
 import com.example.ecommercebackendproject.model.dto.RegistrationForm;
+import com.example.ecommercebackendproject.model.entity.Cart;
 import com.example.ecommercebackendproject.model.entity.Role;
 import com.example.ecommercebackendproject.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class AuthService {
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CartDao cartDao;
+
     public List<User> findAll(){return userDao.findAll();};
     public Optional<User> findById(Long id){
         return userDao.findById(id);
@@ -58,13 +63,19 @@ public class AuthService {
                 user.setPhoneNumber(registrationForm.getPhoneNumber());
                 Optional<Role> role = roleDao.findByRole(registrationForm.getRole());
                 user.setRole(role.get());
+                if(registrationForm.getRole().equals("ROLE_CUSTOMER")){
+                    Cart cart= new Cart();
+                    cart.setUser(user);
+                    cart.setCartTotal(0.0);
+                    cartDao.save(cart);
+                }
                 userDao.save(user);
                 Authentication authentication = authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(registrationForm.getUsername(), registrationForm.getPassword()));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 String jwt = jwtTokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
                 User currentUser = userDao.findByUsername(registrationForm.getUsername()).get();
-                return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), currentUser.getUsername(), currentUser.getFullName()));
+                return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getRole().getRole(), currentUser.getUsername(), currentUser.getFullName()));
             }
             throw new Exception("Đã tồn tại người dùng, vui lòng chọn tên đăng nhập khác");
         }
@@ -79,10 +90,17 @@ public class AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtTokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
             User currentUser = userDao.findByUsername(loginForm.getUsername()).get();
-            return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), currentUser.getUsername(), currentUser.getFullName()));
+            return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getRole().getRole(), currentUser.getUsername(), currentUser.getFullName()));
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sai email hoặc mật khẩu!");
         }
     }
+    public User getCurrentLoggedInUser() {
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        String username=authentication.getName();
+        User user=userDao.findByUsername(username).get();
+        return user;
+    }
+
 }

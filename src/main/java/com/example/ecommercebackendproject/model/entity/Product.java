@@ -1,7 +1,9 @@
 package com.example.ecommercebackendproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -11,6 +13,8 @@ import java.util.List;
 @Data
 @Table
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +40,5 @@ public class Product {
     @JoinColumn(name = "product_id")
     @JsonIgnore
     private List<Review> reviewList=new ArrayList<>();
+
 }

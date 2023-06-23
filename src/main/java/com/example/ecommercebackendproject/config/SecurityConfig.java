@@ -48,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/login","/register").permitAll() // Cho phép tất cả mọi người truy cập vào địa chỉ này
+                .antMatchers("/products/new").hasRole("SELLER")
+                .antMatchers("/cart/**").hasRole("CUSTOMER")
                 .anyRequest().authenticated(); // Tất cả các request khác đều cần phải xác thực mới được truy cập
 
         // Thêm một lớp Filter kiểm tra jwt

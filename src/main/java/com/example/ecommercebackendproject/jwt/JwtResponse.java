@@ -1,18 +1,18 @@
 package com.example.ecommercebackendproject.jwt;
 
 public class JwtResponse {
-    private Long id;
+    private String role;
     private String accessToken;
     private String tokenType = "Bearer";
     private String username;
     private String name;
 
 
-    public JwtResponse(String accessToken, Long id, String username, String name) {
+    public JwtResponse(String accessToken, String role, String username, String name) {
         this.accessToken = accessToken;
         this.username = username;
         this.name = name;
-        this.id = id;
+        this.role = role;
     }
 
     public String getName() {
@@ -23,12 +23,12 @@ public class JwtResponse {
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
+    public String getRole() {
+        return role;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getAccessToken() {

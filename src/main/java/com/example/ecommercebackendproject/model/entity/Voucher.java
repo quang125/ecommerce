@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @Table
@@ -17,5 +18,6 @@ public class Voucher {
     @JsonIgnore
     private User user;
     private String code;
-    private long discount;
+    private LocalDateTime endDate;
+    private Integer discount;
 }

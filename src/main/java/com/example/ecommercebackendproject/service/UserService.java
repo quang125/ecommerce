@@ -36,17 +36,19 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User>user=userDao.findByUsername(username);
+        User user1=user.get();
         if(user.isPresent()){
-            return new CustomUserDetails(user.get());
+            return new CustomUserDetails(user1.getUsername(),user1.getPassword(),user1.getRole().getRole());
         }
         throw new UsernameNotFoundException(username);
     }
 
     public UserDetails loadUserById(Long userId) {
         Optional<User>user=userDao.findById(userId);
+        User user1=user.get();
         if(user.isPresent()){
-            return new CustomUserDetails(user.get());
+            return new CustomUserDetails(user1.getUsername(),user1.getPassword(),user1.getRole().getRole());
         }
-        throw new UsernameNotFoundException("");
+        throw new UsernameNotFoundException(user1.getUsername());
     }
 }

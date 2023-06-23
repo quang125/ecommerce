@@ -11,8 +11,8 @@ import javax.persistence.*;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-    @OneToOne(cascade = CascadeType.ALL)
+    private Long id;
+    @OneToOne
     @JsonIgnore
     private Product product;
     @ManyToOne
