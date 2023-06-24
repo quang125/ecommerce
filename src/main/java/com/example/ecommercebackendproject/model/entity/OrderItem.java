@@ -22,5 +22,5 @@ public class OrderItem {
     @JsonIgnore
     private Product product;
     private int quantity;
-    private String paymentMethod;
+
 }

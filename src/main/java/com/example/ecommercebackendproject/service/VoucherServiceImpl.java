@@ -19,13 +19,25 @@ public class VoucherServiceImpl implements IVoucherService{
     private VoucherDao voucherDao;
     @Autowired
     private UserDao userDao;
+
+
     @Override
-    public List<Voucher> findALlVoucherOfUser() throws Exception {
+    public List<Voucher> findALlVoucherOfUser(Long userId) throws Exception {
         try {
-            User user = getCurrentLoggedInUser();
+            return voucherDao.findByUserId(userId);
+        }
+        catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Voucher> findAllVoucher() throws Exception {
+        try {
+            User user=getCurrentLoggedInUser();
             return voucherDao.findByUserId(user.getId());
         }
-        catch (Exception e){
+        catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
@@ -34,7 +46,9 @@ public class VoucherServiceImpl implements IVoucherService{
     public Voucher getVoucherByCode(String code) throws Exception {
         try {
             User user = getCurrentLoggedInUser();
-            return voucherDao.findByCode(user.getId(), code).get();
+            Voucher voucher=voucherDao.findByCode(user.getId(),code).get();
+            if(voucher.getEndDate().isBefore(LocalDateTime.now())) return voucher;
+            throw new Exception("Voucher expired");
         }
         catch (Exception e){
             throw new Exception(e.getMessage());
@@ -42,13 +56,18 @@ public class VoucherServiceImpl implements IVoucherService{
     }
 
     @Override
-    public Voucher giveVoucherToCustomer(VoucherDto voucherDto) {
-        Voucher voucher=new Voucher();
-        voucher.setCode(voucherDto.getCode());
-        voucher.setDiscount(voucher.getDiscount());
-        voucher.setUser(userDao.findById(voucherDto.getUserId()).get());
-        voucher.setEndDate(LocalDateTime.now().plusDays(voucherDto.getExpireTime()));
-        return voucherDao.save(voucher);
+    public Voucher giveVoucherToCustomer(VoucherDto voucherDto) throws Exception {
+        try{
+            Voucher voucher=new Voucher();
+            voucher.setCode(voucherDto.getCode());
+            voucher.setDiscount(voucher.getDiscount());
+            voucher.setUser(userDao.findById(voucherDto.getUserId()).get());
+            voucher.setEndDate(LocalDateTime.now().plusDays(voucherDto.getExpireTime()));
+            return voucherDao.save(voucher);
+        }
+        catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
     public User getCurrentLoggedInUser() {
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();

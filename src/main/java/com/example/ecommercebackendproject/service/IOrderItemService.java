@@ -6,7 +6,9 @@ import com.example.ecommercebackendproject.model.entity.OrderItem;
 import java.util.List;
 
 public interface IOrderItemService {
-    public List<OrderItem>showOrderItem();
-    public List<OrderItem> checkout(List<CartItem> cartItemList);
-    public void cancelOrder(Long orderItemId);
+    public List<OrderItem>showOrderItem(Long orderId) throws Exception;
+    public void cancelOrder(Long orderItemId) throws Exception;
+    public List<OrderItem> findOrderItemWithPriceInRange(Long from, Long to) throws Exception;
+    public List<OrderItem> findOrderItemWithStatus(String status) throws Exception;
+    public List<OrderItem> showAllOrderItem(Long userId) throws Exception;
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.persistence.criteria.Order;
 
 @Entity
 @Table
@@ -21,7 +22,7 @@ public class OrderAddress {
     private String ward;
     @Column(nullable = false)
     private String address;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JsonIgnore
-    private OrderItem orderItem;
+    private PurchaseOrder order;
 }

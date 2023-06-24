@@ -1,4 +1,4 @@
 package com.example.ecommercebackendproject.controller;
 
-public class AdminController {
+public class OrderAddressController {
 }

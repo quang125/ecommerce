@@ -49,6 +49,10 @@ public class User {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private List<Review> reviews;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private List<PurchaseOrder> orders;
     @ManyToOne
     @JsonIgnore
     private Role role;
